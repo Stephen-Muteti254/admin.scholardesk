@@ -4,9 +4,9 @@ import Page from "@/pages/settings";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Settings & Team | ScholarEdge Admin" },
+      { title: "Settings & Team | ScholarDesk Admin" },
       { name: "description", content: "Configure pricing, notifications, integrations and admin roles." },
-      { property: "og:title", content: "Settings & Team | ScholarEdge Admin" },
+      { property: "og:title", content: "Settings & Team | ScholarDesk Admin" },
       { property: "og:description", content: "Configure pricing, notifications, integrations and admin roles." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

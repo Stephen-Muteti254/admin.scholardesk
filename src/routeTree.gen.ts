@@ -16,6 +16,7 @@ import { Route as AssignmentHelpRouteImport } from './routes/assignment-help'
 import { Route as ClassHelpRouteImport } from './routes/class-help'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ExamHelpRouteImport } from './routes/exam-help'
+import { Route as ExpertApplicationsRouteImport } from './routes/expert-applications'
 import { Route as ExpertsRouteImport } from './routes/experts'
 import { Route as MaterialsRouteImport } from './routes/materials'
 import { Route as OrdersRouteImport } from './routes/orders'
@@ -58,6 +59,11 @@ const ExamHelpRoute = ExamHelpRouteImport.update({
   path: '/exam-help',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExpertApplicationsRoute = ExpertApplicationsRouteImport.update({
+  id: '/expert-applications',
+  path: '/expert-applications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExpertsRoute = ExpertsRouteImport.update({
   id: '/experts',
   path: '/experts',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/class-help': typeof ClassHelpRoute
   '/customers': typeof CustomersRoute
   '/exam-help': typeof ExamHelpRoute
+  '/expert-applications': typeof ExpertApplicationsRoute
   '/experts': typeof ExpertsRoute
   '/materials': typeof MaterialsRoute
   '/orders': typeof OrdersRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByTo {
   '/class-help': typeof ClassHelpRoute
   '/customers': typeof CustomersRoute
   '/exam-help': typeof ExamHelpRoute
+  '/expert-applications': typeof ExpertApplicationsRoute
   '/experts': typeof ExpertsRoute
   '/materials': typeof MaterialsRoute
   '/orders': typeof OrdersRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/class-help': typeof ClassHelpRoute
   '/customers': typeof CustomersRoute
   '/exam-help': typeof ExamHelpRoute
+  '/expert-applications': typeof ExpertApplicationsRoute
   '/experts': typeof ExpertsRoute
   '/materials': typeof MaterialsRoute
   '/orders': typeof OrdersRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/class-help'
     | '/customers'
     | '/exam-help'
+    | '/expert-applications'
     | '/experts'
     | '/materials'
     | '/orders'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/class-help'
     | '/customers'
     | '/exam-help'
+    | '/expert-applications'
     | '/experts'
     | '/materials'
     | '/orders'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/class-help'
     | '/customers'
     | '/exam-help'
+    | '/expert-applications'
     | '/experts'
     | '/materials'
     | '/orders'
@@ -191,6 +203,7 @@ export interface RootRouteChildren {
   ClassHelpRoute: typeof ClassHelpRoute
   CustomersRoute: typeof CustomersRoute
   ExamHelpRoute: typeof ExamHelpRoute
+  ExpertApplicationsRoute: typeof ExpertApplicationsRoute
   ExpertsRoute: typeof ExpertsRoute
   MaterialsRoute: typeof MaterialsRoute
   OrdersRoute: typeof OrdersRoute
@@ -250,6 +263,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExamHelpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/expert-applications': {
+      id: '/expert-applications'
+      path: '/expert-applications'
+      fullPath: '/expert-applications'
+      preLoaderRoute: typeof ExpertApplicationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/experts': {
       id: '/experts'
       path: '/experts'
@@ -303,6 +323,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClassHelpRoute: ClassHelpRoute,
   CustomersRoute: CustomersRoute,
   ExamHelpRoute: ExamHelpRoute,
+  ExpertApplicationsRoute: ExpertApplicationsRoute,
   ExpertsRoute: ExpertsRoute,
   MaterialsRoute: MaterialsRoute,
   OrdersRoute: OrdersRoute,

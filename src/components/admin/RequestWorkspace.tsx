@@ -55,11 +55,9 @@ import {
   deleteRequest,
   refundRequest,
   replyToRequest,
-  sendQuote,
-  updateQuote,
   updateRequest,
-  withdrawQuote,
 } from "@/services/adminService";
+import { issueQuote, type RequestQuote } from "@/services/requestService";
 
 type Props = {
   request: ServiceRequest | null;
@@ -107,41 +105,37 @@ export function RequestWorkspace({ request, onClose, onChange, onDelete }: Props
     toast.success(internal ? "Internal note added" : "Reply sent to customer");
   };
 
-  const addQuote = () => {
+  const [quoteBusy, setQuoteBusy] = useState(false);
+
+  const sendNewQuote = async () => {
     const value = Number(amount);
-    if (!value) {
+    if (!value || value <= 0) {
       toast.error("Enter a quote amount");
       return;
     }
-    const quote: Quote = {
-      id: `q-${Date.now()}`,
-      amount: value,
-      currency: "USD",
-      note: quoteNote || "Quote issued by operations.",
-      status: "sent",
-      sentAt: new Date().toISOString(),
-      expiresAt: quoteExpiry || new Date(Date.now() + 3 * 864e5).toISOString(),
-    };
-    void sendQuote(r.id, quote as unknown as Record<string, unknown>).catch(() => {});
-    onChange(r.id, { quotes: [...r.quotes, quote], status: "quoted" });
-    setAmount("");
-    setQuoteNote("");
-    setQuoteExpiry("");
-    toast.success(`Quote of ${formatMoney(value)} sent`);
-  };
 
-  const setQuoteStatus = (quoteId: string, status: Quote["status"]) => {
-    void updateQuote(r.id, quoteId, { status }).catch(() => {});
-    onChange(r.id, {
-      quotes: r.quotes.map((q) => (q.id === quoteId ? { ...q, status } : q)),
-    });
-    toast.success(`Quote marked ${status}`);
-  };
+    setQuoteBusy(true);
 
-  const removeQuote = (quoteId: string) => {
-    void withdrawQuote(r.id, quoteId).catch(() => {});
-    onChange(r.id, { quotes: r.quotes.filter((q) => q.id !== quoteId) });
-    toast.success("Quote withdrawn");
+    try {
+      const updated = await issueQuote(r.id, {
+        amount: value,
+        notes: quoteNote || undefined,
+        expiresAt: quoteExpiry || undefined,
+      });
+
+      onChange(r.id, {
+        quotes: updated.quotes as unknown as Quote[],
+        status: updated.status,
+      });
+      setAmount("");
+      setQuoteNote("");
+      setQuoteExpiry("");
+      toast.success(`Quote of ${formatMoney(value)} sent`);
+    } catch {
+      toast.error("Unable to send quote");
+    } finally {
+      setQuoteBusy(false);
+    }
   };
 
   return (
@@ -325,39 +319,62 @@ export function RequestWorkspace({ request, onClose, onChange, onDelete }: Props
             </TabsContent>
 
             <TabsContent value="quotes" className="space-y-4 pt-4">
-              {r.quotes.map((q) => (
-                <div key={q.id} className="rounded-lg border border-border p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="font-display text-lg font-semibold">
-                      {formatMoney(q.amount)}
-                    </span>
-                    <StatusBadge value={q.status} />
+              {(r.quotes as unknown as RequestQuote[]).length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  No quotes have been sent for this request yet.
+                </p>
+              )}
+
+              {(r.quotes as unknown as RequestQuote[]).map((q, i) => {
+                const isLatest = i === (r.quotes as unknown as RequestQuote[]).length - 1;
+                const isCustomerOffer = q.issuedByRole === "customer";
+
+                return (
+                  <div
+                    key={`${q.issuedAt}-${i}`}
+                    className={`rounded-lg border p-4 ${
+                      isLatest && isCustomerOffer
+                        ? "border-primary bg-primary/5"
+                        : "border-border"
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="font-display text-lg font-semibold">
+                        {formatMoney(q.amount)}
+                      </span>
+                      {q.acceptedAt ? (
+                        <StatusBadge value="accepted" />
+                      ) : q.rejectedAt ? (
+                        <StatusBadge value="declined" />
+                      ) : isCustomerOffer ? (
+                        <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                          Customer counter-offer - awaiting your response
+                        </span>
+                      ) : (
+                        <StatusBadge value="sent" />
+                      )}
+                    </div>
+                    {q.deliverySchedule && (
+                      <p className="mt-1 text-sm">{q.deliverySchedule}</p>
+                    )}
+                    {q.notes && (
+                      <p className="mt-2 text-sm text-muted-foreground">{q.notes}</p>
+                    )}
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {isCustomerOffer ? "Proposed" : "Sent"} {formatDateTime(q.issuedAt)}
+                      {q.expiresAt ? ` · Expires ${formatDateTime(q.expiresAt)}` : ""}
+                    </p>
                   </div>
-                  <p className="mt-2 text-sm text-muted-foreground">{q.note}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Sent {formatDateTime(q.sentAt)} · Expires {formatDateTime(q.expiresAt)}
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Button size="sm" variant="outline" onClick={() => setQuoteStatus(q.id, "accepted")}>
-                      Mark accepted
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => setQuoteStatus(q.id, "declined")}>
-                      Mark declined
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => toast.success("Quote resent")}>
-                      Resend
-                    </Button>
-                    <Button size="sm" variant="ghost" className="text-destructive" onClick={() => removeQuote(q.id)}>
-                      Withdraw
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
 
               <div className="rounded-lg border border-dashed border-border p-4">
-                <p className="text-sm font-semibold">Issue another quote</p>
+                <p className="text-sm font-semibold">
+                  {r.quotes.length > 0 ? "Send a new quote" : "Send a quote"}
+                </p>
                 <p className="text-xs text-muted-foreground">
-                  Multiple quotes are supported — for milestones, revisions or add-ons.
+                  Sending a new quote supersedes any prior one awaiting a response -
+                  use this to respond to a customer's counter-offer too.
                 </p>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   <Field label="Amount (USD)">
@@ -386,8 +403,9 @@ export function RequestWorkspace({ request, onClose, onChange, onDelete }: Props
                     />
                   </Field>
                 </div>
-                <Button className="mt-3" onClick={addQuote}>
-                  <CalendarClock className="h-4 w-4" /> Send quote
+                <Button className="mt-3" disabled={quoteBusy} onClick={sendNewQuote}>
+                  <CalendarClock className="h-4 w-4" />
+                  {quoteBusy ? "Sending…" : "Send quote"}
                 </Button>
               </div>
             </TabsContent>

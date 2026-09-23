@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------
- * Mock data for the ScholarEdge admin console.
+ * Mock data for the ScholarDesk admin console.
  * Purely for visualisation — swap for API responses (see services/).
  * ----------------------------------------------------------------*/
 

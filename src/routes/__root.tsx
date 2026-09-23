@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "author", content: "ScholarEdge" },
+      { name: "author", content: "ScholarDesk" },
       { name: "robots", content: "noindex, nofollow" },
       { name: "theme-color", content: "#0F172A" },
     ],

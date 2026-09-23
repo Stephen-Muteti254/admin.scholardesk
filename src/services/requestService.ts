@@ -47,6 +47,19 @@ export interface UpdateRequestPayload {
   tags?: string[];
 }
 
+export interface RequestQuote {
+  amount: number;
+  currency: string;
+  issuedAt: string;
+  expiresAt?: string | null;
+  deliverySchedule?: string | null;
+  notes?: string | null;
+  issuedBy?: number | null;
+  issuedByRole: "admin" | "customer";
+  acceptedAt?: string | null;
+  rejectedAt?: string | null;
+}
+
 export async function listRequests(params: ListRequestsParams = {}): Promise<ListRequestsResponse> {
   const response = await api.get("/admin/requests", { params });
   return response.data;
@@ -99,4 +112,20 @@ export async function exportRequests(params: ListRequestsParams = {}): Promise<B
     responseType: "blob",
   });
   return response.data;
+}
+
+export interface IssueQuotePayload {
+  amount: number;
+  currency?: string;
+  deliverySchedule?: string;
+  notes?: string;
+  expiresAt?: string;
+}
+
+export async function issueQuote(
+  id: string,
+  payload: IssueQuotePayload,
+): Promise<ServiceRequest> {
+  const response = await api.post(`/admin/requests/${id}/quote`, payload);
+  return response.data.request ?? response.data;
 }

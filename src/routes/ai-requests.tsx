@@ -4,9 +4,9 @@ import Page from "@/pages/ai-requests";
 export const Route = createFileRoute("/ai-requests")({
   head: () => ({
     meta: [
-      { title: "AI & Plagiarism Queue | ScholarEdge Admin" },
+      { title: "AI & Plagiarism Queue | ScholarDesk Admin" },
       { name: "description", content: "Triage AI detection reports and AI/plagiarism removal jobs." },
-      { property: "og:title", content: "AI & Plagiarism Queue | ScholarEdge Admin" },
+      { property: "og:title", content: "AI & Plagiarism Queue | ScholarDesk Admin" },
       { property: "og:description", content: "Triage AI detection reports and AI/plagiarism removal jobs." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

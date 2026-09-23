@@ -18,6 +18,7 @@ import {
   FileText,
   Bell,
   LogOut,
+  ClipboardList,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -65,6 +66,7 @@ const groups: { label: string; items: { to: string; label: string; icon: typeof 
     items: [
       { to: "/customers", label: "Customers", icon: Users },
       { to: "/experts", label: "Experts", icon: UserSquare2 },
+      { to: "/expert-applications", label: "Expert Applications", icon: ClipboardList },
       { to: "/settings", label: "Settings & Team", icon: Settings },
     ],
   },
@@ -126,7 +128,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} />
           <aside className="absolute inset-y-0 left-0 w-64 overflow-y-auto bg-ink-gradient text-ink-foreground">
-            <div className="px-6 py-5 font-display text-base font-semibold">ScholarEdge Admin</div>
+            <div className="px-6 py-5 font-display text-base font-semibold">ScholarDesk Admin</div>
             {nav}
           </aside>
         </div>

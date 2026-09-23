@@ -24,6 +24,10 @@ import {
   updateSettings,
   type WorkspaceSettings,
 } from "@/services/settingsService";
+import {
+  getWriterHiringSetting,
+  updateWriterHiringSetting,
+} from "@/services/writerHiringService";
 import { useErrorToast } from "@/hooks/useErrorToast";
 
 const DEFAULT_SETTINGS: WorkspaceSettings = {
@@ -93,6 +97,31 @@ function SettingsPage() {
     onError: () => toast.error("Unable to remove team member"),
   });
 
+  // Separate from the WorkspaceSettings form above - this hits its
+  // own, real backend endpoint (/admin/settings/writer-hiring) rather
+  // than the not-yet-implemented /admin/settings.
+  const hiringQuery = useQuery({
+    queryKey: ["settings", "writer-hiring"],
+    queryFn: getWriterHiringSetting,
+  });
+
+  useErrorToast(hiringQuery.isError, "Unable to load hiring settings.");
+
+  const [hiringNotice, setHiringNoticeInput] = useState("");
+
+  useEffect(() => {
+    if (hiringQuery.data) setHiringNoticeInput(hiringQuery.data.hiring_notice ?? "");
+  }, [hiringQuery.data]);
+
+  const hiringMutation = useMutation({
+    mutationFn: updateWriterHiringSetting,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["settings", "writer-hiring"], data);
+      toast.success("Hiring settings updated");
+    },
+    onError: () => toast.error("Unable to update hiring settings"),
+  });
+
   const team = teamQuery.data ?? [];
   const loadingSettings = settingsQuery.isLoading || !form;
 
@@ -136,6 +165,7 @@ function SettingsPage() {
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="services">Service defaults</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
+            <TabsTrigger value="hiring">Expert hiring</TabsTrigger>
             <TabsTrigger value="team">
               {teamQuery.isLoading ? (
                 <span className="flex items-center gap-1.5">
@@ -292,6 +322,46 @@ function SettingsPage() {
                   checked={form.notifications.weekly_performance_digest}
                   onCheckedChange={(v) => setNotification("weekly_performance_digest", v)}
                 />
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="hiring" className="space-y-4 pt-6">
+            {hiringQuery.isLoading ? (
+              <SettingsToggleListSkeleton rows={1} />
+            ) : (
+              <div className="space-y-4 rounded-xl border border-border bg-card p-6 shadow-card">
+                <ToggleRow
+                  label="Accepting expert applications"
+                  description="When off, the public registration page hides the 'apply as a writer' option and new applications are rejected."
+                  checked={hiringQuery.data?.writer_hiring_open ?? true}
+                  onCheckedChange={(v) =>
+                    hiringMutation.mutate({ writer_hiring_open: v })
+                  }
+                />
+
+                <div className="space-y-2 rounded-lg border border-border p-4">
+                  <Label htmlFor="hiring-notice">
+                    Notice shown when hiring is closed
+                  </Label>
+                  <Textarea
+                    id="hiring-notice"
+                    value={hiringNotice}
+                    onChange={(e) => setHiringNoticeInput(e.target.value)}
+                    placeholder="We're not accepting new writer applications right now - check back soon."
+                    rows={3}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={hiringMutation.isPending}
+                    onClick={() =>
+                      hiringMutation.mutate({ hiring_notice: hiringNotice })
+                    }
+                  >
+                    {hiringMutation.isPending ? "Saving…" : "Save notice"}
+                  </Button>
+                </div>
               </div>
             )}
           </TabsContent>

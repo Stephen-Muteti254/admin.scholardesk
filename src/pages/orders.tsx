@@ -22,6 +22,8 @@ import {
 import { StatCardSkeleton } from "@/components/skeletons/StatCardSkeleton";
 import { OrdersTableSkeleton } from "@/components/skeletons/OrdersTableSkeleton";
 import { LoadingOverlay } from "@/components/skeletons/LoadingOverlay";
+import { AssignExpertDialog } from "@/components/admin/AssignExpertDialog";
+import { SubmissionsDialog } from "@/components/admin/SubmissionsDialog";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useInitialLoading } from "@/hooks/useInitialLoading";
 import { useErrorToast } from "@/hooks/useErrorToast";
@@ -53,6 +55,8 @@ function OrdersPage() {
   const [sortBy, setSortBy] = useState("createdAt");
   const [direction, setDirection] = useState<"asc" | "desc">("desc");
   const [busyRowId, setBusyRowId] = useState<string | null>(null);
+  const [assignOrder, setAssignOrder] = useState<Order | null>(null);
+  const [submissionsOrder, setSubmissionsOrder] = useState<Order | null>(null);
 
   const debouncedSearch = useDebounce(search, 300);
 
@@ -339,6 +343,16 @@ function OrdersPage() {
                 Regenerate download link
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              {r.status === "paid" && !r.assignedExpertId ? (
+                <DropdownMenuItem onClick={() => setAssignOrder(r)}>
+                  Assign expert
+                </DropdownMenuItem>
+              ) : null}
+              {r.assignedExpertId ? (
+                <DropdownMenuItem onClick={() => setSubmissionsOrder(r)}>
+                  View submissions
+                </DropdownMenuItem>
+              ) : null}
               <DropdownMenuItem
                 onClick={() =>
                   runRowAction(
@@ -359,6 +373,22 @@ function OrdersPage() {
             </DropdownMenuContent>
           </DropdownMenu>
         )}
+      />
+
+      <AssignExpertDialog
+        order={assignOrder}
+        open={Boolean(assignOrder)}
+        onOpenChange={(open) => {
+          if (!open) setAssignOrder(null);
+        }}
+      />
+
+      <SubmissionsDialog
+        order={submissionsOrder}
+        open={Boolean(submissionsOrder)}
+        onOpenChange={(open) => {
+          if (!open) setSubmissionsOrder(null);
+        }}
       />
     </AdminLayout>
   );

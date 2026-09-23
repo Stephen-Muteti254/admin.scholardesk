@@ -56,7 +56,7 @@ function Dashboard() {
     <AdminLayout>
       <AdminPageHeader
         title="Operations dashboard"
-        description="Live view of every revenue line and service queue across ScholarEdge and ExamStealth."
+        description="Live view of every revenue line and service queue across ScholarDesk and ExamStealth."
         actions={
           <Button variant="hero" asChild>
             <Link to="/ai-requests">Go to service desk</Link>
