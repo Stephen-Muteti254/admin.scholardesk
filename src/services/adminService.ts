@@ -96,16 +96,6 @@ export const updatePayout = (id: string, payload: Record<string, unknown>) =>
   api.patch(`/admin/payouts/${id}`, payload).then((r) => r.data);
 
 /* --- ExamStealth licences --- */
-export const listLicenses = (params?: ListParams) =>
-  api.get("/admin/stealth/licenses", { params }).then((r) => r.data);
-export const issueLicense = (payload: Record<string, unknown>) =>
-  api.post("/admin/stealth/licenses", payload).then((r) => r.data);
-export const updateLicense = (id: string, payload: Record<string, unknown>) =>
-  api.patch(`/admin/stealth/licenses/${id}`, payload).then((r) => r.data);
-export const revokeLicense = (id: string) =>
-  api.post(`/admin/stealth/licenses/${id}/revoke`).then((r) => r.data);
-export const deleteLicense = (id: string) =>
-  api.delete(`/admin/stealth/licenses/${id}`).then((r) => r.data);
 
 /* --- Analytics & settings --- */
 export const getDashboardMetrics = (params?: ListParams) =>

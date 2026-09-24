@@ -58,8 +58,11 @@ const groups: { label: string; items: { to: string; label: string; icon: typeof 
     ],
   },
   {
-    label: "ExamStealth",
-    items: [{ to: "/stealth", label: "Licences & Devices", icon: MonitorSmartphone }],
+    label: "AssessDesk",
+    items: [
+      { to: "/assessdesk/packages", label: "Tokens & Packages", icon: MonitorSmartphone },
+      { to: "/assessdesk/users", label: "Users & Grants", icon: Users },
+    ],
   },
   {
     label: "People",

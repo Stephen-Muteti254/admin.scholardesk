@@ -123,20 +123,7 @@ export type Expert = {
   joinedAt: string;
 };
 
-export type License = {
-  id: string;
-  key: string;
-  customer: string;
-  email: string;
-  plan: "Trial" | "Single Exam" | "Semester" | "Enterprise";
-  devices: number;
-  maxDevices: number;
-  status: "active" | "expired" | "revoked" | "pending";
-  issuedAt: string;
-  expiresAt: string;
-  lastSeen: string;
-  os: "Windows" | "macOS";
-};
+
 
 export type Payout = {
   id: string;
@@ -681,14 +668,7 @@ export const customers: Customer[] = [
   { id: "c12", name: "Tom Ferreira", email: "tom.f@mail.example", country: "Brazil", joinedAt: iso(170), requests: 4, orders: 2, spend: 510, status: "active", lastActive: iso(3) },
 ];
 
-export const licenses: License[] = [
-  { id: "l1", key: "STLH-9F2K-77QA-1MBD", customer: "Rahul Verma", email: "rahul.v@mail.example", plan: "Semester", devices: 2, maxDevices: 3, status: "active", issuedAt: iso(30), expiresAt: isoFuture(90), lastSeen: iso(0, 2), os: "Windows" },
-  { id: "l2", key: "STLH-4B8T-02XN-9PLC", customer: "Chloe Bennett", email: "chloe.b@mail.example", plan: "Single Exam", devices: 1, maxDevices: 1, status: "pending", issuedAt: iso(0, 6), expiresAt: isoFuture(14), lastSeen: iso(0, 6), os: "macOS" },
-  { id: "l3", key: "STLH-1CD5-56RE-8KLM", customer: "Yusuf Karim", email: "yusuf.k@mail.example", plan: "Single Exam", devices: 1, maxDevices: 1, status: "revoked", issuedAt: iso(22), expiresAt: iso(8), lastSeen: iso(15), os: "Windows" },
-  { id: "l4", key: "STLH-7YH2-33WQ-6TRV", customer: "Ethan Brooks", email: "ethan.brooks@mail.example", plan: "Trial", devices: 1, maxDevices: 1, status: "expired", issuedAt: iso(45), expiresAt: iso(38), lastSeen: iso(38), os: "Windows" },
-  { id: "l5", key: "STLH-5MN9-88ZA-2QWE", customer: "Ridgeway Academy", email: "ops@ridgeway.example", plan: "Enterprise", devices: 24, maxDevices: 50, status: "active", issuedAt: iso(150), expiresAt: isoFuture(215), lastSeen: iso(0, 1), os: "Windows" },
-  { id: "l6", key: "STLH-3JK7-19PL-4ZXC", customer: "Ana Petrova", email: "ana.p@mail.example", plan: "Semester", devices: 3, maxDevices: 3, status: "active", issuedAt: iso(70), expiresAt: isoFuture(20), lastSeen: iso(2), os: "macOS" },
-];
+
 
 export const payouts: Payout[] = [
   { id: "p1", expert: "Dr. Helen Mwangi", period: "Jul 1 – Jul 15", jobs: 12, amount: 1840, method: "Wise", status: "scheduled", dueAt: isoFuture(2) },

@@ -23,6 +23,8 @@ import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as StealthRouteImport } from './routes/stealth'
+import { Route as AssessdeskPackagesRouteImport } from './routes/assessdesk/packages'
+import { Route as AssessdeskUsersRouteImport } from './routes/assessdesk/users'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -94,6 +96,16 @@ const StealthRoute = StealthRouteImport.update({
   path: '/stealth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssessdeskPackagesRoute = AssessdeskPackagesRouteImport.update({
+  id: '/assessdesk/packages',
+  path: '/assessdesk/packages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssessdeskUsersRoute = AssessdeskUsersRouteImport.update({
+  id: '/assessdesk/users',
+  path: '/assessdesk/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,6 +122,8 @@ export interface FileRoutesByFullPath {
   '/payments': typeof PaymentsRoute
   '/settings': typeof SettingsRoute
   '/stealth': typeof StealthRoute
+  '/assessdesk/packages': typeof AssessdeskPackagesRoute
+  '/assessdesk/users': typeof AssessdeskUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -126,6 +140,8 @@ export interface FileRoutesByTo {
   '/payments': typeof PaymentsRoute
   '/settings': typeof SettingsRoute
   '/stealth': typeof StealthRoute
+  '/assessdesk/packages': typeof AssessdeskPackagesRoute
+  '/assessdesk/users': typeof AssessdeskUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -143,6 +159,8 @@ export interface FileRoutesById {
   '/payments': typeof PaymentsRoute
   '/settings': typeof SettingsRoute
   '/stealth': typeof StealthRoute
+  '/assessdesk/packages': typeof AssessdeskPackagesRoute
+  '/assessdesk/users': typeof AssessdeskUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,6 +179,8 @@ export interface FileRouteTypes {
     | '/payments'
     | '/settings'
     | '/stealth'
+    | '/assessdesk/packages'
+    | '/assessdesk/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -177,6 +197,8 @@ export interface FileRouteTypes {
     | '/payments'
     | '/settings'
     | '/stealth'
+    | '/assessdesk/packages'
+    | '/assessdesk/users'
   id:
     | '__root__'
     | '/'
@@ -193,6 +215,8 @@ export interface FileRouteTypes {
     | '/payments'
     | '/settings'
     | '/stealth'
+    | '/assessdesk/packages'
+    | '/assessdesk/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -210,6 +234,8 @@ export interface RootRouteChildren {
   PaymentsRoute: typeof PaymentsRoute
   SettingsRoute: typeof SettingsRoute
   StealthRoute: typeof StealthRoute
+  AssessdeskPackagesRoute: typeof AssessdeskPackagesRoute
+  AssessdeskUsersRoute: typeof AssessdeskUsersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -312,6 +338,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/assessdesk/packages': {
+      id: '/assessdesk/packages'
+      path: '/assessdesk/packages'
+      fullPath: '/assessdesk/packages'
+      preLoaderRoute: typeof AssessdeskPackagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assessdesk/users': {
+      id: '/assessdesk/users'
+      path: '/assessdesk/users'
+      fullPath: '/assessdesk/users'
+      preLoaderRoute: typeof AssessdeskUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -330,6 +370,8 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentsRoute: PaymentsRoute,
   SettingsRoute: SettingsRoute,
   StealthRoute: StealthRoute,
+  AssessdeskPackagesRoute: AssessdeskPackagesRoute,
+  AssessdeskUsersRoute: AssessdeskUsersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
